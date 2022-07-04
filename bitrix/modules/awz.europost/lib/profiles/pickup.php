@@ -183,26 +183,33 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
         $rCheck = PvzTable::checkPvzFromTown($locationName);
         if($rCheck->isSuccess()){
 
-            $price = 0;
+            $price = false;
 
             if($weight == 0){
 
             }elseif($weight<2000){
-                $price = intval($config['PRICE']['TARIF_1']);
+                $price = round($config['TARIFS']['TARIF_1'],2);
             }elseif($weight<10000){
-                $price = intval($config['PRICE']['TARIF_2']);
+                $price = round($config['TARIFS']['TARIF_2'],2);
             }elseif($weight<20000){
-                $price = intval($config['PRICE']['TARIF_3']);
+                $price = round($config['TARIFS']['TARIF_3'],2);
             }elseif($weight<30000){
-                $price = intval($config['PRICE']['TARIF_4']);
+                $price = round($config['TARIFS']['TARIF_4'],2);
             }elseif($weight<35000){
-                $price = intval($config['PRICE']['TARIF_5']);
+                $price = round($config['TARIFS']['TARIF_5'],2);
             }elseif($weight<40000){
-                $price = intval($config['PRICE']['TARIF_6']);
+                $price = round($config['TARIFS']['TARIF_6'],2);
             }elseif($weight<45000){
-                $price = intval($config['PRICE']['TARIF_7']);
+                $price = round($config['TARIFS']['TARIF_7'],2);
             }elseif($weight<50000){
-                $price = intval($config['PRICE']['TARIF_8']);
+                $price = round($config['TARIFS']['TARIF_8'],2);
+            }
+
+            if($price === false){
+                $result->addError(new \Bitrix\Main\Error(
+                    Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIFS_ERR')
+                ));
+                return $result;
             }
 
             $result->setDeliveryPrice(

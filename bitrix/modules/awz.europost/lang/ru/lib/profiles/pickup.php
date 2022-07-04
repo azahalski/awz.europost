@@ -8,6 +8,7 @@ $MESS["AWZ_EUROPOST_PROFILE_PICKUP_SETT_WEIGHT_DEF"] = "Вес товара в �
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_BTN_OPEN"] = "Выберите пункт выдачи";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_ERR_REGION"] = "Не указан регион доставки";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIFS"] = "Тарифы";
+$MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIFS_ERR"] = "Стоимость доставки не рассчитана";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIFS_DESC"] = "Тарифы на доставку";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_1"] = "от 0,01 до 2 кг.";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_2"] = "от 2,01 до 10 кг.";
