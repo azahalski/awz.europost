@@ -79,47 +79,47 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
                 )
             ),
             "TARIFS"=>array(
-                'TITLE' => 'Тарифы',
-                'DESCRIPTION' => 'Тарифы на доставку',
+                'TITLE' => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIFS'),
+                'DESCRIPTION' => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIFS_DESC'),
                 'ITEMS' => array(
                     'TARIF_1' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 0,01 до 2 кг.',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_1'),
                         "DEFAULT" => '2.99'
                     ),
                     'TARIF_2' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 2,01 до 10 кг.',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_2'),
                         "DEFAULT" => '3.99'
                     ),
                     'TARIF_3' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 10,01 до 20 кг.',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_3'),
                         "DEFAULT" => '5.99'
                     ),
                     'TARIF_4' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 20,01 до 30',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_4'),
                         "DEFAULT" => '8.49'
                     ),
                     'TARIF_5' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 30,01 до 35',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_5'),
                         "DEFAULT" => '23.99'
                     ),
                     'TARIF_6' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 35,01 до 40',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_6'),
                         "DEFAULT" => '24.99'
                     ),
                     'TARIF_7' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 40,01 до 45',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_7'),
                         "DEFAULT" => '28.99'
                     ),
                     'TARIF_8' => array(
                         'TYPE' => 'NUMBER',
-                        "NAME" => 'от 45,01 до 50',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_8'),
                         "DEFAULT" => '30.99'
                     ),
                 )
@@ -183,7 +183,27 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
         $rCheck = PvzTable::checkPvzFromTown($locationName);
         if($rCheck->isSuccess()){
 
-            $price = 500;
+            $price = 0;
+
+            if($weight == 0){
+
+            }elseif($weight<2000){
+                $price = intval($config['PRICE']['TARIF_1']);
+            }elseif($weight<10000){
+                $price = intval($config['PRICE']['TARIF_2']);
+            }elseif($weight<20000){
+                $price = intval($config['PRICE']['TARIF_3']);
+            }elseif($weight<30000){
+                $price = intval($config['PRICE']['TARIF_4']);
+            }elseif($weight<35000){
+                $price = intval($config['PRICE']['TARIF_5']);
+            }elseif($weight<40000){
+                $price = intval($config['PRICE']['TARIF_6']);
+            }elseif($weight<45000){
+                $price = intval($config['PRICE']['TARIF_7']);
+            }elseif($weight<50000){
+                $price = intval($config['PRICE']['TARIF_8']);
+            }
 
             $result->setDeliveryPrice(
                 roundEx(

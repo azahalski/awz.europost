@@ -108,8 +108,6 @@ class zApi {
         $url = self::URL;
         $url .= '/'.$method;
 
-        $url = 'https://skovka.by/api/prox.php?type=all';
-
         $res = null;
         $obCache = null;
 
