@@ -18,7 +18,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_aft
 \Bitrix\Main\Loader::includeModule($module_id);
 
 $startProfile = intval($_REQUEST['profile']);
-$startCode = trim($_REQUEST['code']);
+$startCode = preg_replace('/([^0-9A-z_])/is','',$_REQUEST['code']);
 
 $deliveryProfileList = \Awz\Europost\Helper::getActiveProfileIds();
 
@@ -171,8 +171,8 @@ $tabControl->Buttons();
 ?>
 <input <?if ($MODULE_RIGHT<"W") echo "disabled" ?> type="submit" class="adm-btn-green" name="Update" value="<?=Loc::getMessage('AWZ_EUROPOST_OPT_L_BTN_SAVE')?>" />
 <input type="hidden" name="Update" value="Y" />
-<input type="hidden" name="IFRAME_TYPE" value="<?=$_REQUEST['IFRAME_TYPE']?>">
-<input type="hidden" name="IFRAME" value="<?=$_REQUEST['IFRAME']?>">
+<input type="hidden" name="IFRAME_TYPE" value="<?=preg_replace('/([^0-9A-z_])/is','',$_REQUEST['IFRAME_TYPE'])?>">
+<input type="hidden" name="IFRAME" value="<?=preg_replace('/([^0-9A-z_])/is','',$_REQUEST['IFRAME'])?>">
 <input type="hidden" name="profile" value="<?=$startProfile?>">
 <input type="hidden" name="code" value="<?=$startCode?>">
 <?$tabControl->End();?>
