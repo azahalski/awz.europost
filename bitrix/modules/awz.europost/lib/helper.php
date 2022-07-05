@@ -56,11 +56,17 @@ class Helper {
                     $className = '\\'.$classNames[0];
                     $params = DeliveryManager::getById($delivery->getId());
 					//bug php 7.3 main 20.200.300, sale 22.100.0
+					$bug = false;
 					if($params['CLASS_NAME'] == '\Bitrix\Sale\Delivery\Services\EmptyDeliveryService'){
 						$params = DeliveryManager::getById($order->getField('DELIVERY_ID'));
+						$bug = true;
 					}
                     if($params['CLASS_NAME'] == $className){
-                        $checkMyDelivery = $delivery->getId();
+						if($bug){
+							$checkMyDelivery = $order->getField('DELIVERY_ID');
+						}else{
+							$checkMyDelivery = $delivery->getId();
+						}
                     }
                 }
                 if(isset($classNames[1])){
@@ -68,11 +74,17 @@ class Helper {
                         $className = '\\' . $classNames[1];
                         $params = DeliveryManager::getById($delivery->getId());
 						//bug php 7.3 main 20.200.300, sale 22.100.0
+						$bug = false;
 						if($params['CLASS_NAME'] == '\Bitrix\Sale\Delivery\Services\EmptyDeliveryService'){
 							$params = DeliveryManager::getById($order->getField('DELIVERY_ID'));
+							$bug = true;
 						}
                         if ($params['CLASS_NAME'] == $className) {
-                            $checkMyDelivery = $delivery->getId();
+                            if($bug){
+								$checkMyDelivery = $order->getField('DELIVERY_ID');
+							}else{
+								$checkMyDelivery = $delivery->getId();
+							}
                         }
                     }
                 }
