@@ -55,7 +55,7 @@ class Helper {
                 if($type == self::DOST_TYPE_ALL || $type == self::DOST_TYPE_PVZ){
                     $className = '\\'.$classNames[0];
                     $params = DeliveryManager::getById($delivery->getId());
-					//bug php 7.3 main 20.200.300, sale 22.100.0
+					//bug php 7.3 main 20.200.300, sale 20.5.43
 					$bug = false;
 					if($params['CLASS_NAME'] == '\Bitrix\Sale\Delivery\Services\EmptyDeliveryService'){
 						$params = DeliveryManager::getById($order->getField('DELIVERY_ID'));
@@ -73,7 +73,7 @@ class Helper {
                     if($type == self::DOST_TYPE_ALL || $type == self::DOST_TYPE_ADR) {
                         $className = '\\' . $classNames[1];
                         $params = DeliveryManager::getById($delivery->getId());
-						//bug php 7.3 main 20.200.300, sale 22.100.0
+						//bug php 7.3 main 20.200.300, sale 20.5.43
 						$bug = false;
 						if($params['CLASS_NAME'] == '\Bitrix\Sale\Delivery\Services\EmptyDeliveryService'){
 							$params = DeliveryManager::getById($order->getField('DELIVERY_ID'));
