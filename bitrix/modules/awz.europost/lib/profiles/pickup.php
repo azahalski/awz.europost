@@ -14,7 +14,7 @@ Loc::loadMessages(__FILE__);
 class Pickup extends \Bitrix\Sale\Delivery\Services\Base
 {
     protected static $isProfile = true;
-    protected static $parent = null;
+    protected $parent = null;
 
     public function __construct(array $initParams)
     {
