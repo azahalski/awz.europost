@@ -85,42 +85,62 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
                     'TARIF_1' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_1'),
-                        "DEFAULT" => '2.99'
+                        "DEFAULT" => '3.16'
+                    ),
+                    'TARIF_1_2' => array(
+                        'TYPE' => 'NUMBER',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_1_2'),
+                        "DEFAULT" => '3.33'
                     ),
                     'TARIF_2' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_2'),
-                        "DEFAULT" => '3.99'
+                        "DEFAULT" => '4.16'
+                    ),
+                    'TARIF_2_2' => array(
+                        'TYPE' => 'NUMBER',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_2_2'),
+                        "DEFAULT" => '4.99'
                     ),
                     'TARIF_3' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_3'),
-                        "DEFAULT" => '5.99'
+                        "DEFAULT" => '6.66'
+                    ),
+                    'TARIF_3_2' => array(
+                        'TYPE' => 'NUMBER',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_3_2'),
+                        "DEFAULT" => '7.49'
                     ),
                     'TARIF_4' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_4'),
-                        "DEFAULT" => '8.49'
+                        "DEFAULT" => '9.16'
+                    ),
+                    'TARIF_4_2' => array(
+                        'TYPE' => 'NUMBER',
+                        "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_4_2'),
+                        "DEFAULT" => '10.83'
                     ),
                     'TARIF_5' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_5'),
-                        "DEFAULT" => '23.99'
+                        "DEFAULT" => '16.66'
                     ),
                     'TARIF_6' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_6'),
-                        "DEFAULT" => '24.99'
+                        "DEFAULT" => '20.83'
                     ),
                     'TARIF_7' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_7'),
-                        "DEFAULT" => '28.99'
+                        "DEFAULT" => '23.33'
                     ),
                     'TARIF_8' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_8'),
-                        "DEFAULT" => '30.99'
+                        "DEFAULT" => '24.99'
                     ),
                     'TARIF_NDS1' => array(
                         'TYPE' => 'Y/N',
@@ -216,14 +236,22 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
 
             if($weight == 0){
 
-            }elseif($weight<2000){
+            }elseif($weight<1000){
                 $price = round($config['TARIFS']['TARIF_1'],2);
-            }elseif($weight<10000){
+            }elseif($weight<2000){
+                $price = round($config['TARIFS']['TARIF_1_2'],2);
+            }elseif($weight<5000){
                 $price = round($config['TARIFS']['TARIF_2'],2);
-            }elseif($weight<20000){
+            }elseif($weight<10000){
+                $price = round($config['TARIFS']['TARIF_2_2'],2);
+            }elseif($weight<15000){
                 $price = round($config['TARIFS']['TARIF_3'],2);
-            }elseif($weight<30000){
+            }elseif($weight<20000){
+                $price = round($config['TARIFS']['TARIF_3_2'],2);
+            }elseif($weight<25000){
                 $price = round($config['TARIFS']['TARIF_4'],2);
+            }elseif($weight<30000){
+                $price = round($config['TARIFS']['TARIF_4_2'],2);
             }elseif($weight<35000){
                 $price = round($config['TARIFS']['TARIF_5'],2);
             }elseif($weight<40000){
