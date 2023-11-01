@@ -41,6 +41,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $MODULE_RIGHT == "W" && strlen($_REQ
 
     Option::set($module_id, "MAP_ADDRESS", trim($_REQUEST["MAP_ADDRESS"]), "");
 
+    $townsPrep = [];
+    try{
+        $townsPrep = unserialize(Option::get('awz.europost', "REPL_TOWNS", "",""), ['allowed_classes' => false]);
+    }catch (\Exception $e){
+        $townsPrep = [];
+    }
+    if(!is_array($townsPrep)) $townsPrep = [];
+    if(isset($_REQUEST['REPL_TOWNS']) && is_array($_REQUEST['REPL_TOWNS'])){
+        foreach($_REQUEST['REPL_TOWNS'] as $key=>$v){
+            if(is_string($v) && $v){
+                $townsPrep[$key] = trim($v);
+            }else{
+                unset($townsPrep[$key]);
+            }
+        }
+    }
+    Option::set($module_id, "REPL_TOWNS", serialize($townsPrep), "");
+
     foreach($deliveryProfileList as $profileId=>$profileName){
         Option::set($module_id, "PVZ_CODE_".$profileId, trim($_REQUEST["PVZ_CODE_".$profileId]), "");
         Option::set($module_id, "PVZ_ADDRESS_".$profileId, trim($_REQUEST["PVZ_ADDRESS_".$profileId]), "");
@@ -116,6 +134,56 @@ $tabControl->BeginNextTab();
     <td>
         <?$val = "N";?>
         <input type="checkbox" value="Y" name="UPDATE_PVZ" <?if ($val=="Y") echo "checked";?>></td>
+</tr>
+    <tr class="heading">
+        <td colspan="2">
+            <?=Loc::getMessage('AWZ_EUROPOST_OPT_L_SOOT')?></td>
+    </tr>
+<tr>
+    <td colspan="2" width="100%">
+        <?
+        $towns = [];
+        try{
+            $towns = unserialize(Option::get($module_id, "REPL_TOWNS", "",""), ['allowed_classes' => false]);
+        }catch (\Exception $e){
+            $towns = [];
+        }
+        if(!is_array($towns)) $towns = [];
+        $allTowns = \Awz\Europost\PvzTable::getList([
+            'select'=>['TOWN'],
+            'group'=>['TOWN']
+        ]);
+        ?>
+        <table style="margin:auto;">
+            <tr>
+                <th style="text-align: left;"><?=Loc::getMessage('AWZ_EUROPOST_OPT_L_SOOT_LBL1')?></th>
+                <th style="text-align: left;"><?=Loc::getMessage('AWZ_EUROPOST_OPT_L_SOOT_LBL2')?></th>
+            </tr>
+        <?
+        $keyIssets = [];
+        while($townName = $allTowns->fetch()){
+            $key = md5(trim($townName['TOWN']));
+            $keyIssets[] = $key;
+            ?>
+            <tr>
+                <td><?=$townName['TOWN']?></td>
+                <td><input type="text" name="REPL_TOWNS[<?=$key?>]" value="<?=$towns[$key]?>"></td>
+            </tr>
+            <?
+        }
+        foreach($towns as $k=>$v){
+            if(!in_array($k, $keyIssets)){
+                ?>
+                <tr>
+                    <td><?=$k?></td>
+                    <td><input type="text" name="REPL_TOWNS[<?=$k?>]" value="<?=$v?>"></td>
+                </tr>
+                <?
+            }
+        }
+        ?>
+        </table>
+   </td>
 </tr>
 
 

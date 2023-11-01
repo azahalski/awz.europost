@@ -6,6 +6,7 @@ use Bitrix\Main\Error;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Entity;
 use Bitrix\Main\Result;
+use Bitrix\Main\Config\Option;
 
 Loc::loadMessages(__FILE__);
 
@@ -68,6 +69,19 @@ class PvzTable extends Entity\DataManager
 
     public static function updatePvz($data){
         if($data['id']){
+
+            $towns = [];
+            try{
+                $towns = unserialize(Option::get('awz.europost', "REPL_TOWNS", "",""), ['allowed_classes' => false]);
+            }catch (\Exception $e){
+                $towns = [];
+            }
+            if(!is_array($towns)) $towns = [];
+            $townKey = md5(trim($data['town']));
+            if(isset($towns[$townKey])){
+                $data['town'] = $towns[$townKey];
+            }
+
             $dataBd = self::getPvz($data['id']);
             $hash = md5(serialize($data));
             $data['hash'] = $hash;

@@ -16,3 +16,6 @@ $MESS["AWZ_EUROPOST_OPT_L_PROPPVZ_ADR_TMPL_DESC"] = "#ID# - ид ПВЗ, <br>#NA
 $MESS["AWZ_EUROPOST_OPT_L_BTN_SAVE"] = "Сохранить";
 $MESS["AWZ_EUROPOST_OPT_MESS1"] = "ПВЗ удалены";
 $MESS["AWZ_EUROPOST_OPT_MESS2"] = "ПВЗ загружены";
+$MESS["AWZ_EUROPOST_OPT_L_SOOT"] = "Соответствие местоположений";
+$MESS["AWZ_EUROPOST_OPT_L_SOOT_LBL1"] = "ЕвроПочта";
+$MESS["AWZ_EUROPOST_OPT_L_SOOT_LBL2"] = "Битрикс";
