@@ -24,5 +24,5 @@ $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_7"] = "от 40,01 до 45 кг.";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_8"] = "от 45,01 до 50 кг.";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_NDS1"] = "Добавить НДС 20% к тарифам";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_NDS2"] = "Добавить НДС 20% к плате за объявленную ценность";
-$MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_NP"] = "Добавить плату за объявленную ценность (до 100 рублей - 0.75%, от 100 до 300 рублей - 1.25%, от 300.01 рублей - 1.58%)";
+$MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_NP"] = "Добавить плату за объявленную ценность (до 300 рублей - 1%, от 300.01 рублей - 1.5%)";
 $MESS["AWZ_EUROPOST_PROFILE_PICKUP_TARIF_ADD"] = "Добавить фиксированную сумму к финальной стоимости рассчитанной доставки";

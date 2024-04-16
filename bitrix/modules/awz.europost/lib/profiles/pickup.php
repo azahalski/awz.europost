@@ -100,27 +100,27 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
                     'TARIF_2_2' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_2_2'),
-                        "DEFAULT" => '4.99'
+                        "DEFAULT" => '5.41'
                     ),
                     'TARIF_3' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_3'),
-                        "DEFAULT" => '6.66'
+                        "DEFAULT" => '7.16'
                     ),
                     'TARIF_3_2' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_3_2'),
-                        "DEFAULT" => '7.49'
+                        "DEFAULT" => '8.58'
                     ),
                     'TARIF_4' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_4'),
-                        "DEFAULT" => '9.16'
+                        "DEFAULT" => '10.25'
                     ),
                     'TARIF_4_2' => array(
                         'TYPE' => 'NUMBER',
                         "NAME" => Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_TARIF_4_2'),
-                        "DEFAULT" => '10.83'
+                        "DEFAULT" => '12.08'
                     ),
                     'TARIF_5' => array(
                         'TYPE' => 'NUMBER',
@@ -268,12 +268,10 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
 
             if($config['TARIFS']['TARIF_NP']==='Y'){
                 $priceOrder = $order->getPrice();
-                if($priceOrder <= 100){
-                    $price2 = round($priceOrder*0.75/100, 2);
-                }elseif($priceOrder <= 300){
-                    $price2 = round($priceOrder*1.25/100, 2);
+                if($priceOrder <= 300){
+                    $price2 = round($priceOrder*1.0/100, 2);
                 }else{
-                    $price2 = round($priceOrder*1.58/100, 2);
+                    $price2 = round($priceOrder*1.5/100, 2);
                 }
                 if($config['TARIFS']['TARIF_NDS2']==='Y'){
                     $price2 = round($price2 + $price2*0.2, 2);
