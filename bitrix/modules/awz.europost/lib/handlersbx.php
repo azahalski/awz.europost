@@ -184,9 +184,10 @@ class handlersBx {
         }
 
         Asset::getInstance()->addString('<script>window._awz_ep_lib_setSearchAddress = "'.$setSearchAddress.'";</script>', true);
-        if(strpos(Asset::getInstance()->getJs(), $host.'/2.1/')===false)
-            Asset::getInstance()->addJs('//'.$host.'/2.1/?lang=ru_RU&apikey='.$key.'&suggest_apikey='.$key2, true);
-        //Asset::getInstance()->addString('<script src="//'.$host.'/2.1/?lang=ru_RU&apikey='.$key.'&suggest_apikey='.$key2.'"></script>', true);
+        Asset::getInstance()->addJs(
+            '//'.$host.'/2.1/?lang=ru_RU&apikey='.$key.'&suggest_apikey='.$key2,
+            true
+        );
 
     }
 
