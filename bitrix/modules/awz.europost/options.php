@@ -40,6 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $MODULE_RIGHT == "W" && strlen($_REQ
     }
 
     Option::set($module_id, "MAP_ADDRESS", trim($_REQUEST["MAP_ADDRESS"]), "");
+    Option::set($module_id, "yandex_map_api_key", trim($_REQUEST["yandex_map_api_key"]), "");
+    Option::set($module_id, "yandex_map_suggest_api_key", trim($_REQUEST["yandex_map_suggest_api_key"]), "");
 
     $townsPrep = [];
     try{
@@ -104,10 +106,29 @@ $tabControl->BeginNextTab();
 ?>
 
 <tr>
-    <td width="50%"><?=Loc::getMessage('AWZ_EUROPOST_OPT_MAP_ADRESS')?></td>
+    <td width="50%"><?=Loc::getMessage('AWZ_EUROPOST_OPT_MAP_ADRESS')?><br>
+        <a href="https://developer.tech.yandex.ru/services" target="_blank">
+            <?=Loc::getMessage('AWZ_EUROPOST_OPT_MAP_ADRESS_DESC')?>
+        </a>
+    </td>
     <td>
         <?$val = Option::get($module_id, "MAP_ADDRESS", "N","");?>
-        <input type="checkbox" value="Y" name="MAP_ADDRESS" <?if ($val=="Y") echo "checked";?>></td>
+        <input type="checkbox" value="Y" name="MAP_ADDRESS" <?if ($val=="Y") echo "checked";?>>
+    </td>
+</tr>
+<tr>
+    <td width="50%"><?=Loc::getMessage('AWZ_EUROPOST_OPT_MAP_ADRESS_KEY1')?></td>
+    <td>
+        <?$val = Option::get($module_id, "yandex_map_api_key", "","");?>
+        <input type="text" value="<?=$val?>" name="yandex_map_api_key">
+    </td>
+</tr>
+    <tr>
+    <td width="50%"><?=Loc::getMessage('AWZ_EUROPOST_OPT_MAP_ADRESS_KEY2')?></td>
+    <td>
+        <?$val = Option::get($module_id, "yandex_map_suggest_api_key", "","");?>
+        <input type="text" value="<?=$val?>" name="yandex_map_suggest_api_key">
+    </td>
 </tr>
 <tr class="heading">
     <td colspan="2">

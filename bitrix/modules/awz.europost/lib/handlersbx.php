@@ -168,12 +168,26 @@ class handlersBx {
 
     public static function OrderDeliveryBuildList(&$arResult, &$arUserResult, $arParams)
     {
-        \CUtil::InitJSCore(array('ajax', 'awz_ep_lib'));
+        \CJSCore::Init(['ajax', 'awz_ep_lib']);
 
         $key = Option::get("fileman", "yandex_map_api_key");
-        $setSearchAddress = Option::get(Handler::MODULE_ID, "MAP_ADDRESS", "N", "");
-        Asset::getInstance()->addString('<script>window._awz_yd_lib_setSearchAddress = "'.$setSearchAddress.'";</script>', true);
-        Asset::getInstance()->addString('<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU&apikey='.$key.'"></script>', true);
+        $key1 = Option::get(Handler::MODULE_ID, "yandex_map_api_key", "", "");
+        if($key1) $key = $key1;
+        $key2 = Option::get(Handler::MODULE_ID, "yandex_map_suggest_api_key", "", "");
+        $host = 'api-maps.yandex.ru';
+        if($key){
+            $host = 'enterprise.api-maps.yandex.ru';
+        }
+        $setSearchAddress = "N";
+        if($key && $key2){
+            $setSearchAddress = Option::get(Handler::MODULE_ID, "MAP_ADDRESS", "N", "");
+        }
+
+        Asset::getInstance()->addString('<script>window._awz_ep_lib_setSearchAddress = "'.$setSearchAddress.'";</script>', true);
+        if(strpos(Asset::getInstance()->getJs(), $host.'/2.1/')===false)
+            Asset::getInstance()->addJs('//'.$host.'/2.1/?lang=ru_RU&apikey='.$key.'&suggest_apikey='.$key2, true);
+        //Asset::getInstance()->addString('<script src="//'.$host.'/2.1/?lang=ru_RU&apikey='.$key.'&suggest_apikey='.$key2.'"></script>', true);
+
     }
 
     public static function OnAdminContextMenuShow(&$items)
