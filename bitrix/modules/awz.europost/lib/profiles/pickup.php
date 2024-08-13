@@ -218,6 +218,7 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
                 }
             }
         }
+        if(!$locationName) $locationName = 'BY';
 
 
         //$api = Helper::getApi();
