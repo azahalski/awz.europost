@@ -6,4 +6,5 @@ $MESS["AWZ_CONFIG_PERMISSION_SECTION_MODULE_98"] = "Просмотр прав д
 $MESS["AWZ_CONFIG_PERMISSION_SECTION_MODULE_99"] = "Редактирование прав доступа";
 $MESS["AWZ_CONFIG_PERMISSION_SECTION_GENS_2"] = "Генерация страниц";
 $MESS["AWZ_CONFIG_PERMISSION_SECTION_GENS_3"] = "Генерация прав доступа";
+$MESS["AWZ_CONFIG_PERMISSION_SECTION_ADMIN_2"] = "Выбор и смена ПВЗ в заказе";
 /*awz.gen end - !!!nodelete*/
