@@ -21,8 +21,11 @@ class awz_europost extends CModule {
     public function __construct()
     {
         $arModuleVersion = array();
-
         include(__DIR__.'/version.php');
+
+        $dirs = explode('/',dirname(__DIR__ . '../'));
+        $this->MODULE_ID = array_pop($dirs);
+        unset($dirs);
 
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
@@ -33,27 +36,80 @@ class awz_europost extends CModule {
         $this->PARTNER_URI = Loc::getMessage("AWZ_PARTNER_URI");
     }
 
+    function DoInstall()
+    {
+        global $APPLICATION, $step;
+
+        $this->InstallFiles();
+        $this->InstallDB();
+        $this->checkOldInstallTables();
+        $this->InstallEvents();
+        $this->createAgents();
+
+        ModuleManager::RegisterModule($this->MODULE_ID);
+
+        $filePath = dirname(__DIR__ . '/../../options.php');
+        if(file_exists($filePath)){
+            LocalRedirect('/bitrix/admin/settings.php?lang='.LANG.'&mid='.$this->MODULE_ID.'&mid_menu=1');
+        }
+
+        return true;
+    }
+
+    function DoUninstall()
+    {
+        global $APPLICATION, $step;
+
+        $step = intval($step);
+        if($step < 2) { //выводим предупреждение
+            $APPLICATION->IncludeAdminFile(Loc::getMessage('AWZ_EUROPOST_INSTALL_TITLE'), $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'. $this->MODULE_ID .'/install/unstep.php');
+        }
+        elseif($step == 2) {
+            //проверяем условие
+            if($_REQUEST['save'] != 'Y' && !isset($_REQUEST['save'])) {
+                $this->UnInstallDB();
+            }
+            $this->UnInstallFiles();
+            $this->UnInstallEvents();
+            $this->deleteAgents();
+
+            ModuleManager::UnRegisterModule($this->MODULE_ID);
+
+            return true;
+        }
+    }
+
     function InstallDB()
     {
         global $DB, $DBType, $APPLICATION;
+        $connection = \Bitrix\Main\Application::getConnection();
         $this->errors = false;
-        $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/". $this->MODULE_ID ."/install/db/".mb_strtolower($DB->type)."/install.sql");
+        if(!$this->errors && !$DB->TableExists('b_awz_europost_pvz')) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/". $this->MODULE_ID ."/install/db/".$connection->getType()."/install.sql");
+        }
+        if(!$this->errors && !$DB->TableExists(implode('_', explode('.',$this->MODULE_ID)).'_permission')) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/" . $this->MODULE_ID . "/install/db/".$connection->getType()."/access.sql");
+        }
         if (!$this->errors) {
             return true;
         } else {
             $APPLICATION->ThrowException(implode("", $this->errors));
             return $this->errors;
         }
-        return true;
     }
 
 
     function UnInstallDB()
     {
         global $DB, $DBType, $APPLICATION;
-
+        $connection = \Bitrix\Main\Application::getConnection();
         $this->errors = false;
-        $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/". $this->MODULE_ID ."/install/db/".mb_strtolower($DB->type)."/uninstall.sql");
+        if (!$this->errors) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/" . $this->MODULE_ID . "/install/db/" . $connection->getType() . "/uninstall.sql");
+        }
+        if (!$this->errors) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/" . $this->MODULE_ID . "/install/db/" . $connection->getType() . "/unaccess.sql");
+        }
         if (!$this->errors) {
             return true;
         }
@@ -89,6 +145,14 @@ class awz_europost extends CModule {
             $this->MODULE_ID, '\Awz\Europost\handlersBx', "OnAdminContextMenuShow");
         $eventManager->registerEventHandlerCompatible("main", "OnEpilog",
             $this->MODULE_ID, '\Awz\Europost\handlersBx', "OnEpilog");
+        $eventManager->registerEventHandlerCompatible(
+            'main', 'OnAfterUserUpdate',
+            $this->MODULE_ID, '\\Awz\\Europost\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
+        $eventManager->registerEventHandlerCompatible(
+            'main', 'OnAfterUserAdd',
+            $this->MODULE_ID, '\\Awz\\Europost\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
         return true;
     }
 
@@ -127,6 +191,14 @@ class awz_europost extends CModule {
             'main', 'OnEpilog',
             $this->MODULE_ID, '\Awz\Europost\handlersBx', 'OnEpilog'
         );
+        $eventManager->unRegisterEventHandler(
+            'sale', 'OnAfterUserUpdate',
+            $this->MODULE_ID, '\\Awz\\Europost\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
+        $eventManager->unRegisterEventHandler(
+            'sale', 'OnAfterUserAdd',
+            $this->MODULE_ID, '\\Awz\\Europost\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
         return true;
     }
 
@@ -136,7 +208,17 @@ class awz_europost extends CModule {
         CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/js/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/js/".$this->MODULE_ID, true);
         CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/css/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/css/".$this->MODULE_ID, true);
         CopyDirFiles($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/images/", $_SERVER['DOCUMENT_ROOT']."/bitrix/images/".$this->MODULE_ID, true);
-        CopyDirFiles($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/components/europost.baloon/", $_SERVER['DOCUMENT_ROOT']."/bitrix/components/awz/europost.baloon", true, true);
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/components/europost.baloon/",
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/components/awz/europost.baloon",
+            true, true
+        );
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/components/europost.config.permissions/",
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/components/awz/europost.config.permissions",
+            true, true
+        );
+
         return true;
     }
 
@@ -146,53 +228,15 @@ class awz_europost extends CModule {
         DeleteDirFilesEx("/bitrix/css/".$this->MODULE_ID);
         DeleteDirFilesEx("/bitrix/images/".$this->MODULE_ID);
         DeleteDirFilesEx("/bitrix/components/awz/europost.baloon");
+        DeleteDirFilesEx("/bitrix/components/awz/europost.config.permissions");
         DeleteDirFiles(
             $_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/admin",
             $_SERVER['DOCUMENT_ROOT']."/bitrix/admin"
         );
-
         return true;
     }
 
-    function DoInstall()
-    {
-        global $APPLICATION, $step;
 
-        $this->InstallFiles();
-        $this->InstallDB();
-        $this->InstallEvents();
-        $this->createAgents();
-
-        ModuleManager::RegisterModule($this->MODULE_ID);
-
-        return true;
-    }
-
-    function DoUninstall()
-    {
-        global $APPLICATION, $step;
-
-        $step = intval($step);
-        if($step < 2) { //выводим предупреждение
-            $APPLICATION->IncludeAdminFile(
-                Loc::getMessage('AWZ_EUROPOST_INSTALL_TITLE'),
-                $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'. $this->MODULE_ID .'/install/unstep.php'
-            );
-        }
-        elseif($step == 2) {
-            //проверяем условие
-            if($_REQUEST['save'] != 'Y' && !isset($_REQUEST['save'])) {
-                $this->UnInstallDB();
-            }
-            $this->UnInstallFiles();
-            $this->UnInstallEvents();
-            $this->deleteAgents();
-
-            ModuleManager::UnRegisterModule($this->MODULE_ID);
-
-            return true;
-        }
-    }
 
     function createAgents() {
         CAgent::AddAgent(
@@ -204,6 +248,11 @@ class awz_europost extends CModule {
 
     function deleteAgents() {
         CAgent::RemoveAgent("\\Awz\\Europost\\Checker::agentGetPickpoints();", $this->MODULE_ID);
+    }
+
+    function checkOldInstallTables()
+    {
+        return true;
     }
 
 }

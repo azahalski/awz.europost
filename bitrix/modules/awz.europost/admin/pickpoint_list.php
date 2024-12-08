@@ -1,21 +1,22 @@
 <?
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_before.php");
-global $APPLICATION;
-$module_id = "awz.europost";
-
-\Bitrix\Main\Loader::includeModule($module_id);
-\Bitrix\Main\Loader::includeModule('sale');
-
 use Awz\Europost\Helper;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Page\Asset;
 use Bitrix\Main\Security;
+use Awz\Europost\Access\AccessController;
+use Awz\Europost\Access\Custom\ActionDictionary;
+
+global $APPLICATION;
+$module_id = "awz.europost";
+
+if(!Loader::includeModule($module_id)) return;
+if(!Loader::includeModule('sale')) return;
 
 Loc::loadMessages(__FILE__);
 
-$POST_RIGHT = $APPLICATION->GetGroupRight($module_id);
-if ($POST_RIGHT == "D")
+if(!AccessController::can(0,ActionDictionary::ACTION_ADMIN_PVZVIEW))
     $APPLICATION->AuthForm(Loc::getMessage("ACCESS_DENIED"));
 
 $APPLICATION->SetTitle(Loc::getMessage("AWZ_EUROPOST_ADMIN_PL_TITLE"));
