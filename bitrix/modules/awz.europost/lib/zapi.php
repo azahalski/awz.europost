@@ -119,6 +119,7 @@ class zApi {
             $this->clearCacheParams();
         }
         $httpClient = null;
+
         if(!$res){
             $httpClient = new HttpClient();
             $httpClient->disableSslVerification();
@@ -138,6 +139,7 @@ class zApi {
         }
 
         $result = new Result();
+
         if(!$res){
             $result->addError(
                 new Error(Loc::getMessage('AWZ_EUROPOST_YDAPI_RESPERROR'))

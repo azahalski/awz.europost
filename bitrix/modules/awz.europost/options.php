@@ -28,7 +28,7 @@ if(!AccessController::isViewSettings())
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_after.php");
 
 $startProfile = intval($_REQUEST['profile']);
-$startCode = preg_replace('/([^0-9A-z_])/is','',$_REQUEST['code']);
+$startCode = preg_replace('/([^0-9A-Za-z_])/is','',$_REQUEST['code']);
 
 $deliveryProfileList = \Awz\Europost\Helper::getActiveProfileIds();
 
@@ -75,6 +75,7 @@ if ($request->getRequestMethod()==='POST' && AccessController::isEditSettings() 
         Option::set($module_id, "PVZ_CODE_".$profileId, trim($_REQUEST["PVZ_CODE_".$profileId]), "");
         Option::set($module_id, "PVZ_ADDRESS_".$profileId, trim($_REQUEST["PVZ_ADDRESS_".$profileId]), "");
         Option::set($module_id, "PVZ_ADDRESS_TMPL_".$profileId, trim($_REQUEST["PVZ_ADDRESS_TMPL_".$profileId]), "");
+        Option::set($module_id, "SHOW_ALL_PVZ_".$profileId, $_REQUEST["SHOW_ALL_PVZ_".$profileId]=='Y' ? "Y" : "N", "");
     }
 }
 
@@ -250,6 +251,14 @@ $tabControl->BeginNextTab();
                     <p><?=Loc::getMessage('AWZ_EUROPOST_OPT_L_PROPPVZ_ADR_TMPL_DESC')?></p>
                 </td>
             </tr>
+        <tr>
+            <td width="50%"><?=Loc::getMessage('AWZ_EUROPOST_OPT_L_PROPPVZ_SHOW_ALL')?>
+            </td>
+            <td>
+                <?$val = Option::get($module_id, "SHOW_ALL_PVZ_".$profileId, "Y","");?>
+                <input type="checkbox" value="Y" name="SHOW_ALL_PVZ_<?=$profileId?>" <?if ($val=="Y") echo "checked";?>>
+            </td>
+        </tr>
         <?}?>
 
 
@@ -261,8 +270,8 @@ $tabControl->Buttons();
 ?>
 <input <?if (!AccessController::isEditSettings()) echo "disabled" ?> type="submit" class="adm-btn-green" name="Update" value="<?=Loc::getMessage('AWZ_EUROPOST_OPT_L_BTN_SAVE')?>" />
 <input type="hidden" name="Update" value="Y" />
-<input type="hidden" name="profile" value="<?=$startProfile?>">
-<input type="hidden" name="code" value="<?=$startCode?>">
+<input type="hidden" name="profile" value="<?=htmlspecialcharsEx($startProfile)?>">
+<input type="hidden" name="code" value="<?=htmlspecialcharsEx($startCode)?>">
     <?if(AccessController::isViewRight()){?>
         <button class="adm-header-btn adm-security-btn" onclick="BX.SidePanel.Instance.open('<?=$saveUrl?>');return false;">
             <?=Loc::getMessage('AWZ_EUROPOST_OPT_SECT3')?>

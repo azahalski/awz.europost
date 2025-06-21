@@ -15,6 +15,7 @@ $MESS["AWZ_EUROPOST_OPT_L_PROFILE_PROP"] = "Привязка свойств";
 $MESS["AWZ_EUROPOST_OPT_L_PROPPVZ"] = "Код свойства заказа в которое писать ид пвз";
 $MESS["AWZ_EUROPOST_OPT_L_PROPPVZ_ADR"] = "Код свойства заказа в которое писать адрес пвз";
 $MESS["AWZ_EUROPOST_OPT_L_PROPPVZ_ADR_TMPL"] = "Шаблон адреса ПВЗ";
+$MESS["AWZ_EUROPOST_OPT_L_PROPPVZ_SHOW_ALL"] = "Отображать все ПВЗ, если ПВЗ нет в переданном городе";
 $MESS["AWZ_EUROPOST_OPT_L_PROPPVZ_ADR_TMPL_DESC"] = "#ID# - ид ПВЗ, <br>#NAME# - название ПВЗ";
 $MESS["AWZ_EUROPOST_OPT_L_BTN_SAVE"] = "Сохранить";
 $MESS["AWZ_EUROPOST_OPT_MESS1"] = "ПВЗ удалены";

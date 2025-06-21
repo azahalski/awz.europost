@@ -17,6 +17,8 @@ Loc::loadMessages(__FILE__);
 class pickPoints extends Controller
 {
 
+    const DEF_COUNTRY = 'BY';
+
     public function configureActions()
     {
         return array(
@@ -118,7 +120,7 @@ class pickPoints extends Controller
             );
             return null;
         }
-        if(bitrix_sessid() != $s_id){
+        if(\bitrix_sessid() != $s_id){
             $this->addError(
                 new Error(Loc::getMessage('AWZ_EUROPOST_API_CONTROL_PICKPOINTS_SESS_ERR'), 100)
             );
@@ -137,7 +139,7 @@ class pickPoints extends Controller
         return $resultData['html'];
     }
 
-    public function listAction($address = '', $profile_id = '', $page = '')
+    public function listAction($address = self::DEF_COUNTRY, $profile_id = '', $page = '')
     {
 
         if(!$profile_id){
@@ -156,7 +158,7 @@ class pickPoints extends Controller
         $items = array();
 
         $filterPvz = array('=TOWN'=>$address);
-        if($address == 'BY') $filterPvz = array();
+        if($address === self::DEF_COUNTRY) $filterPvz = array();
 
         $resPvz = PvzTable::getList(array(
             'select'=>array('*'),
@@ -173,6 +175,12 @@ class pickPoints extends Controller
             );
         }
 
+        $optId = "SHOW_ALL_PVZ_".$profile_id;
+        if($address!=self::DEF_COUNTRY && empty($items)
+            && Option::get("awz.europost", $optId, "Y", "")=="Y"
+        ){
+            return $this->listAction(self::DEF_COUNTRY, $profile_id, $page);
+        }
 
         return array(
             'page'=>$page,

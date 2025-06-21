@@ -5,6 +5,7 @@ use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Page\Asset;
 use Bitrix\Main\Security;
+use Bitrix\Main\Loader;
 use Awz\Europost\Access\AccessController;
 use Awz\Europost\Access\Custom\ActionDictionary;
 
@@ -82,6 +83,8 @@ if($profileId){
         }
     }
 
+    //$locationName = 'BY';
+
     if(!$locationName){
         CAdminMessage::ShowMessage(
             array(
@@ -109,7 +112,7 @@ if($profileId){
     ?>
     <script>
         $(document).ready(function(){
-            window.awz_ep_modal.getPickpointsList('<?=$signedParameters?>');
+            window.awz_ep_modal.getPickpointsList('<?=htmlspecialcharsEx($signedParameters)?>');
         });
     </script>
     <div style="position:relative;">
@@ -117,7 +120,7 @@ if($profileId){
     </div>
     <div>
         <form id="awz-europost-send-id-form">
-            <input type="hidden" name="sign" value="<?=$signedParameters?>" id="awz-europost-send-id-sign">
+            <input type="hidden" name="sign" value="<?=htmlspecialcharsEx($signedParameters)?>" id="awz-europost-send-id-sign">
             <br><br><?=Loc::getMessage("AWZ_EUROPOST_ID_POSTAMATA")?><input type="text" name="AWZ_EP_POINT_ID" id="AWZ_EP_POINT_ID" value="">
             <?if($_REQUEST['page'] == 'order_edit'){?>
                 <p><?=Loc::getMessage('AWZ_EUROPOST_ADMIN_PL_COPY')?></p>
