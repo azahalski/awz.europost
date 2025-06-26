@@ -238,29 +238,29 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
             if($weight == 0){
 
             }elseif($weight<1000){
-                $price = round($config['TARIFS']['TARIF_1'],2);
+                $price = round((float)$config['TARIFS']['TARIF_1'],2);
             }elseif($weight<2000){
-                $price = round($config['TARIFS']['TARIF_1_2'],2);
+                $price = round((float)$config['TARIFS']['TARIF_1_2'],2);
             }elseif($weight<5000){
-                $price = round($config['TARIFS']['TARIF_2'],2);
+                $price = round((float)$config['TARIFS']['TARIF_2'],2);
             }elseif($weight<10000){
-                $price = round($config['TARIFS']['TARIF_2_2'],2);
+                $price = round((float)$config['TARIFS']['TARIF_2_2'],2);
             }elseif($weight<15000){
-                $price = round($config['TARIFS']['TARIF_3'],2);
+                $price = round((float)$config['TARIFS']['TARIF_3'],2);
             }elseif($weight<20000){
-                $price = round($config['TARIFS']['TARIF_3_2'],2);
+                $price = round((float)$config['TARIFS']['TARIF_3_2'],2);
             }elseif($weight<25000){
-                $price = round($config['TARIFS']['TARIF_4'],2);
+                $price = round((float)$config['TARIFS']['TARIF_4'],2);
             }elseif($weight<30000){
-                $price = round($config['TARIFS']['TARIF_4_2'],2);
+                $price = round((float)$config['TARIFS']['TARIF_4_2'],2);
             }elseif($weight<35000){
-                $price = round($config['TARIFS']['TARIF_5'],2);
+                $price = round((float)$config['TARIFS']['TARIF_5'],2);
             }elseif($weight<40000){
-                $price = round($config['TARIFS']['TARIF_6'],2);
+                $price = round((float)$config['TARIFS']['TARIF_6'],2);
             }elseif($weight<45000){
-                $price = round($config['TARIFS']['TARIF_7'],2);
+                $price = round((float)$config['TARIFS']['TARIF_7'],2);
             }elseif($weight<50000){
-                $price = round($config['TARIFS']['TARIF_8'],2);
+                $price = round((float)$config['TARIFS']['TARIF_8'],2);
             }
 
             if($config['TARIFS']['TARIF_NDS1']==='Y' && $price){
