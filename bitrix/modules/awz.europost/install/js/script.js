@@ -209,9 +209,9 @@ if(!window.awz_ep_modal){
                     }catch (e) {
                         window.awz_ep_modal.loadBaloonAjax(
                             false, window.awz_ep_modal.lastSign,
-                            $('#awz_ep_POINT_INFO'), $('#AWZ_EP_POINT_ID').val(),
+                            $('#AWZ_EP_POINT_INFO'), $('#AWZ_EP_POINT_ID').val(),
                             function(){
-                                $('#awz_ep_POINT_INFO .awz-ep-select-pvz').remove();
+                                $('#AWZ_EP_POINT_INFO .awz-ep-select-pvz').remove();
                             }
                         );
                     }
