@@ -11,7 +11,7 @@ $arJsConfig = array(
         'js' => '/bitrix/js/'.$module_id.'/script.js',
         'css' => '/bitrix/css/'.$module_id.'/style.css',
         'lang' => '/bitrix/modules/'.$module_id.'/lang/'.LANGUAGE_ID.'/js/js_script.php',
-        'rel' => array('jquery'),
+        'rel' => array('jquery3'),
     ),
 );
 foreach ($arJsConfig as $ext => $arExt) {
