@@ -1,0 +1,561 @@
+{
+  "schema_version": "1.0",
+  "module": {
+    "code": "awz.europost"
+  },
+  "current_state": {
+    "status": "needs_review",
+    "last_run_id": "awz.europost-1789040268",
+    "archive_sha256": null,
+    "open_findings": 0,
+    "blocking_findings_open": 0,
+    "false_positive_findings": 3,
+    "accepted_risk_findings": 5,
+    "fixed_findings": 0,
+    "removed_findings": 0,
+    "total_findings": 8
+  },
+  "runs": [
+    {
+      "run_id": "awz.europost-1789040268",
+      "created_at": "2026-09-10T08:39:30+00:00",
+      "archive_sha256": null,
+      "scanner_request_id": "awz.europost-1789040268",
+      "input_summary": "Обнаружено 8 уязвимостей в 7 файлах при анализе 71 файла модуля. Максимальная severity: high.",
+      "summary": {
+        "current_scan_findings": 8,
+        "severity_counts": {
+          "high": 1,
+          "medium": 5,
+          "low": 2
+        },
+        "new_findings": 8,
+        "still_open_findings": 0,
+        "reopened_findings": 0,
+        "resolved_since_previous_run": 0
+      }
+    }
+  ],
+  "findings": [
+    {
+      "journal_finding_id": "JF-00001",
+      "fingerprint": "c552d331be65f6e7578856d77d914e73",
+      "type": "Insecure TLS",
+      "severity": "high",
+      "status": "accepted_risk",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "lib/zapi.php",
+        "line": "125"
+      },
+      "current_location": {
+        "file": "lib/zapi.php",
+        "line": "125"
+      },
+      "latest_vulnerability": {
+        "file": "lib/zapi.php",
+        "line": "125",
+        "type": "Insecure TLS",
+        "severity": "high",
+        "description": "Подтверждена уязвимость: отключена проверка SSL сертификата при HTTP-запросах к API. Метод $httpClient->disableSslVerification() на строке 125 делает приложение уязвимым к MITM (Man-in-the-Middle) атакам. Атакующий может перехватывать и модифицировать трафик между модулем и API.",
+        "recommendation": "Удалить вызов ->disableSslVerification() и использовать корректные SSL сертификаты. Если требуется тестирование, используйте временную настройку только для staging-окружения.",
+        "fix": "Before:\n$httpClient = new HttpClient();\n$httpClient->disableSslVerification();\n\nAfter:\n$httpClient = new HttpClient();\n// Use proper SSL certificates\n",
+        "reviewed": {
+          "oldSeverity": "high",
+          "newSeverity": "high",
+          "changed": false,
+          "category": "kept-as-reported",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "fix",
+          "confidence": "medium",
+          "rationale": "Severity left unchanged after review; no stronger Bitrix/BUS-specific downgrade condition was identified from the journal text alone."
+        },
+        "partner_disposition": {
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "lib/zapi.php",
+            "line": "125"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00002",
+      "fingerprint": "3b304a66e51ec89e03755253e8467ff7",
+      "type": "Insecure Deserialization",
+      "severity": "medium",
+      "status": "accepted_risk",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "lib/api/filters/sign.php",
+        "line": "30-31"
+      },
+      "current_location": {
+        "file": "lib/api/filters/sign.php",
+        "line": "30-31"
+      },
+      "latest_vulnerability": {
+        "file": "lib/api/filters/sign.php",
+        "line": "30-31",
+        "type": "Insecure Deserialization",
+        "severity": "medium",
+        "description": "Подозрение: использование unserialize() после base64_decode() на строке 31. Хотя используется параметр ['allowed_classes'=>false], что ограничивает десериализацию, данные подписываются и затем десериализуются. Если ключ подписи скомпрометирован, это может привести к проблемам.",
+        "recommendation": "Использовать json_encode/json_decode вместо serialize/unserialize для обмена данными. Убедиться, что секретный ключ подписи защищен.",
+        "fix": "Before:\n$params = $signer->unsign($this->getAction()->getController()->getRequest()->get('signed'));\n$params = unserialize(base64_decode($params), ['allowed_classes'=>false]);\n\nAfter:\n$signedData = $signer->unsign($this->getAction()->getController()->getRequest()->get('signed'));\n$params = json_decode(base64_decode($signedData), true);\n",
+        "reviewed": {
+          "oldSeverity": "medium",
+          "newSeverity": "medium",
+          "changed": false,
+          "category": "kept-as-reported",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "fix",
+          "confidence": "medium",
+          "rationale": "Severity left unchanged after review; no stronger Bitrix/BUS-specific downgrade condition was identified from the journal text alone."
+        },
+        "partner_disposition": {
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "lib/api/filters/sign.php",
+            "line": "30-31"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00003",
+      "fingerprint": "23e28a2e5e83581df808985e6377aab2",
+      "type": "Cross-Site Scripting",
+      "severity": "medium",
+      "status": "accepted_risk",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "options.php",
+        "line": "30-78"
+      },
+      "current_location": {
+        "file": "options.php",
+        "line": "30-78"
+      },
+      "latest_vulnerability": {
+        "file": "options.php",
+        "line": "30-78",
+        "type": "Cross-Site Scripting",
+        "severity": "medium",
+        "description": "Подозрение: обработка данных из $_REQUEST без должной валидации на строках 30-31, 52-54, 63-78. Хотя некоторые данные обрабатываются через trim() и intval(), другие данные записываются в опции без достаточной санитизации (например, MAP_ADDRESS, yandex_map_api_key, PVZ_CODE, PVZ_ADDRESS).",
+        "recommendation": "Добавить строгую валидацию и санитизацию всех входных данных. Использовать htmlspecialchars() при выводе и регулярные выражения для фильтрации.",
+        "fix": "Before:\nOption::set($module_id, \"MAP_ADDRESS\", trim($_REQUEST[\"MAP_ADDRESS\"]), \"\");\n\nAfter:\n$mapAddress = preg_replace('/[^a-zA-Z0-9_\\-\\.]/', '', $_REQUEST['MAP_ADDRESS']);\nOption::set($module_id, \"MAP_ADDRESS\", trim($mapAddress), \"\");\n",
+        "reviewed": {
+          "oldSeverity": "medium",
+          "newSeverity": "medium",
+          "changed": false,
+          "category": "xss-unclear-source",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "validate-source-and-fix-escaping",
+          "confidence": "low",
+          "rationale": "Adjusted conservatively because the journal does not clearly prove a low-privileged or public payload source. Confirm source permissions before treating as a blocker."
+        },
+        "partner_disposition": {
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "options.php",
+            "line": "30-78"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00004",
+      "fingerprint": "74b7ec3e7a1ba03c0a28a0505a0d63a1",
+      "type": "Cross-Site Scripting",
+      "severity": "low",
+      "status": "accepted_risk",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "lib/handlersbx.php",
+        "line": "65-66"
+      },
+      "current_location": {
+        "file": "lib/handlersbx.php",
+        "line": "65-66"
+      },
+      "latest_vulnerability": {
+        "file": "lib/handlersbx.php",
+        "line": "65-66",
+        "type": "Cross-Site Scripting",
+        "severity": "low",
+        "description": "Подозрение: доступ к $_REQUEST напрямую на строке 66 в хуке OnEndBufferContent. Данные из $_REQUEST['action'] и $_REQUEST['formData'] используются без валидации.",
+        "recommendation": "Валидировать все данные из $_REQUEST перед использованием. Проверять существование ключей массива.",
+        "fix": "Before:\nif($_REQUEST['action'] == 'changeDeliveryService' && $_REQUEST['formData']['order_id']){\n\nAfter:\nif(isset($_REQUEST['action'], $_REQUEST['formData']['order_id']) && $_REQUEST['action'] == 'changeDeliveryService' && $_REQUEST['formData']['order_id']){\n",
+        "reviewed": {
+          "oldSeverity": "low",
+          "newSeverity": "low",
+          "changed": false,
+          "category": "xss-unclear-source",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "validate-source-and-fix-escaping",
+          "confidence": "low",
+          "rationale": "Adjusted conservatively because the journal does not clearly prove a low-privileged or public payload source. Confirm source permissions before treating as a blocker."
+        },
+        "partner_disposition": {
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "lib/handlersbx.php",
+            "line": "65-66"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00005",
+      "fingerprint": "3c6c4c1c4d61102b174a0a5287a941c1",
+      "type": "IDOR",
+      "severity": "medium",
+      "status": "accepted_risk",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "admin/pickpoint_list.php",
+        "line": "37-42"
+      },
+      "current_location": {
+        "file": "admin/pickpoint_list.php",
+        "line": "37-42"
+      },
+      "latest_vulnerability": {
+        "file": "admin/pickpoint_list.php",
+        "line": "37-42",
+        "type": "IDOR",
+        "severity": "medium",
+        "description": "Подозрение: загрузка заказа по ID из $_REQUEST без достаточной проверки прав доступа на строке 37. Хотя позже проверяется AccessController, заказ загружается до основной проверки прав.",
+        "recommendation": "Переместить проверку прав доступа до загрузки заказа. Валидировать ID заказа.",
+        "fix": "Before:\n$order = \\Bitrix\\Sale\\Order::load(intval($_REQUEST['order']));\n\nAfter:\nif(!AccessController::can(0, ActionDictionary::ACTION_ADMIN_PVZVIEW)) {\n    $APPLICATION->AuthForm(Loc::getMessage(\"ACCESS_DENIED\"));\n}\n$order = \\Bitrix\\Sale\\Order::load(intval($_REQUEST['order']));\n",
+        "reviewed": {
+          "oldSeverity": "medium",
+          "newSeverity": "medium",
+          "changed": false,
+          "category": "kept-as-reported",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "fix",
+          "confidence": "medium",
+          "rationale": "Severity left unchanged after review; no stronger Bitrix/BUS-specific downgrade condition was identified from the journal text alone."
+        },
+        "partner_disposition": {
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "admin/pickpoint_list.php",
+            "line": "37-42"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "accepted_risk",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00006",
+      "fingerprint": "75f3e478db72584867ebb9187da9ed6c",
+      "type": "Authentication Bypass",
+      "severity": "medium",
+      "status": "false_positive",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "lib/api/controller/pickpoints.php",
+        "line": "69-73"
+      },
+      "current_location": {
+        "file": "lib/api/controller/pickpoints.php",
+        "line": "69-73"
+      },
+      "latest_vulnerability": {
+        "file": "lib/api/controller/pickpoints.php",
+        "line": "69-73",
+        "type": "Authentication Bypass",
+        "severity": "medium",
+        "description": "Подозрение: слабая проверка прав доступа к модулю Sale на строке 69. Проверка $saleModulePermissions < \"W\" требует полного доступа (W) к модулю Sale для выполнения API запросов, что слишком строго и может быть обходным путем.",
+        "recommendation": "Использовать более гранулярную проверку прав. Проверять права конкретно к действию, а не ко всему модулю.",
+        "fix": "Before:\n$saleModulePermissions = $APPLICATION->GetGroupRight(\"sale\");\nif ($saleModulePermissions < \"W\") {\n    $this->addError(new Error('Доступ запрещен', 403));\n    return null;\n}\n\nAfter:\n// Check specific action permission instead of module-wide right\nif (!\\Bitrix\\Main\\Access\\AccessController::create('some_specific_action')->check()) {\n    $this->addError(new Error('Доступ запрещен', 403));\n    return null;\n}\n",
+        "reviewed": {
+          "oldSeverity": "medium",
+          "newSeverity": "medium",
+          "changed": false,
+          "category": "authenticated-or-limited-authorization-bypass",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "verify-on-latest-version",
+          "confidence": "medium",
+          "rationale": "Set to medium because the finding describes authorization bypass or privilege misuse, but not a direct high-impact IDOR, financial bug, or confirmed account takeover in the journal text."
+        },
+        "partner_disposition": {
+          "status": "false_positive",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "lib/api/controller/pickpoints.php",
+            "line": "69-73"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "false_positive",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00007",
+      "fingerprint": "64e35c445224f9d8be1c93ad7f9ad51b",
+      "type": "Cross-Site Scripting",
+      "severity": "low",
+      "status": "false_positive",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "install/components/europost.baloon/templates/.default/lang/ru/template.php",
+        "line": "1"
+      },
+      "current_location": {
+        "file": "install/components/europost.baloon/templates/.default/lang/ru/template.php",
+        "line": "1"
+      },
+      "latest_vulnerability": {
+        "file": "install/components/europost.baloon/templates/.default/lang/ru/template.php",
+        "line": "1",
+        "type": "Cross-Site Scripting",
+        "severity": "low",
+        "description": "Файл шаблона языка может содержать незаэкранированный вывод. Требуется проверка использования htmlspecialcharsbx при выводе данных пользователя.",
+        "recommendation": "Использовать htmlspecialcharsbx() для всех переменных, выводимых в шаблоне.",
+        "fix": "Before:\n<?echo $variable?>\n\nAfter:\n<?echo htmlspecialcharsbx($variable)?>\n",
+        "reviewed": {
+          "oldSeverity": "low",
+          "newSeverity": "low",
+          "changed": false,
+          "category": "xss-unclear-source",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "validate-source-and-fix-escaping",
+          "confidence": "low",
+          "rationale": "Adjusted conservatively because the journal does not clearly prove a low-privileged or public payload source. Confirm source permissions before treating as a blocker."
+        },
+        "partner_disposition": {
+          "status": "false_positive",
+          "note": "Не может содержать",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "install/components/europost.baloon/templates/.default/lang/ru/template.php",
+            "line": "1"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "false_positive",
+          "note": "Не может содержать",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    },
+    {
+      "journal_finding_id": "JF-00008",
+      "fingerprint": "dae2d41f0240c6d1101f59ebb6d8d964",
+      "type": "SQL Injection",
+      "severity": "medium",
+      "status": "false_positive",
+      "first_seen_run_id": "awz.europost-1789040268",
+      "last_seen_run_id": "awz.europost-1789040268",
+      "resolved_run_id": null,
+      "original_location": {
+        "file": "lib/access/model/usermodel.php",
+        "line": "25,59"
+      },
+      "current_location": {
+        "file": "lib/access/model/usermodel.php",
+        "line": "25,59"
+      },
+      "latest_vulnerability": {
+        "file": "lib/access/model/usermodel.php",
+        "line": "25,59",
+        "type": "SQL Injection",
+        "severity": "medium",
+        "description": "Подозрение: использование ->exec() на строках 25 и 59 может указывать на выполнение SQL запросов. Требуется дополнительная проверка Tables\\RoleRelationTable и Tables\\PermissionTable на наличие параметризированных запросов.",
+        "recommendation": "Убедиться, что все SQL запросы используют параметризацию и ORM Bitrix.",
+        "fix": "Before:\n->exec();\n\nAfter:\n// Ensure query uses parameterized statements through Bitrix ORM\n",
+        "reviewed": {
+          "oldSeverity": "low",
+          "newSeverity": "medium",
+          "changed": true,
+          "category": "sql-injection",
+          "versionScope": "current",
+          "version": "current",
+          "currentVersionRelevance": "present-in-current-scan",
+          "action": "parameterize-query",
+          "confidence": "medium",
+          "rationale": "Kept as medium by default under the BUS Marketplace triage policy; raise only when exploit impact is proven beyond the journal text."
+        },
+        "partner_disposition": {
+          "status": "false_positive",
+          "note": "",
+          "author": "Andrew Zahalski",
+          "updated_at": "2026-09-10T08:46:16+00:00"
+        }
+      },
+      "events": [
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "detected",
+          "at": "2026-09-10T08:39:30+00:00",
+          "location": {
+            "file": "lib/access/model/usermodel.php",
+            "line": "25,59"
+          },
+          "status": "open"
+        },
+        {
+          "run_id": "awz.europost-1789040268",
+          "event": "partner_disposition_updated",
+          "at": "2026-09-10T08:46:16+00:00",
+          "status": "false_positive",
+          "note": "",
+          "author": "Andrew Zahalski"
+        }
+      ]
+    }
+  ]
+}
