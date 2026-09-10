@@ -326,7 +326,9 @@ class Pickup extends \Bitrix\Sale\Delivery\Services\Base
             $signedParameters = $signer->sign(base64_encode(serialize(array(
                 'address'=>$locationName,
                 'profile_id'=>$this->getId(),
-                's_id'=>bitrix_sessid()
+                's_id'=>bitrix_sessid(),
+                'user'=>'',
+                'order'=>''
             ))));
 
             $buttonHtml = '<a id="AWZ_EP_POINT_LINK" class="'.$config['MAIN']['BTN_CLASS'].'" href="#" onclick="window.awz_ep_modal.show(\''.Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_BTN_OPEN').'\',\''.$signedParameters.'\');return false;">'.Loc::getMessage('AWZ_EUROPOST_PROFILE_PICKUP_BTN_OPEN').'</a><div id="AWZ_EP_POINT_INFO">'.$pointHtml.'</div>';

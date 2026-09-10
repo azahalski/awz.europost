@@ -192,8 +192,8 @@ $tabControl->BeginNextTab();
             $keyIssets[] = $key;
             ?>
             <tr>
-                <td><?=$townName['TOWN']?></td>
-                <td><input type="text" name="REPL_TOWNS[<?=$key?>]" value="<?=$towns[$key]?>"></td>
+                <td><?=htmlspecialcharsEx($townName['TOWN'])?></td>
+                <td><input type="text" name="REPL_TOWNS[<?=$key?>]" value="<?=htmlspecialcharsEx($towns[$key])?>"></td>
             </tr>
             <?
         }

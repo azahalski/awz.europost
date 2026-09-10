@@ -8,6 +8,7 @@ use Bitrix\Main\Engine\ActionFilter\Scope;
 use Awz\Europost\Api\Filters\Sign;
 use Awz\Europost\Helper;
 use Bitrix\Main\Error;
+use Bitrix\Main\Event;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
@@ -58,6 +59,19 @@ class pickPoints extends Controller
         }
 
         $orderOb = \Bitrix\Sale\Order::load($order);
+
+        global $APPLICATION;
+        // Если заказ не найден, предотвращаем Fatals
+        if (!$orderOb) {
+            $this->addError(new Error('Заказ не найден', 404));
+            return null;
+        }
+        $saleModulePermissions = $APPLICATION->GetGroupRight("sale");
+        if ($saleModulePermissions < "W") { // W - полный доступ (изменение)
+            $this->addError(new Error('Доступ запрещен', 403));
+            return null;
+        }
+
         $propertyCollection = $orderOb->getPropertyCollection();
         $res = null;
 
@@ -174,6 +188,17 @@ class pickPoints extends Controller
                 ),
             );
         }
+
+        $event = new Event(
+            \Awz\Europost\Handler::MODULE_ID, "OnBeforelistActionReturn",
+            array(
+                'items'=>&$items,
+                'address'=>$address,
+                'profile_id'=>$profile_id,
+                'page'=>$page
+            )
+        );
+        $event->send();
 
         $optId = "SHOW_ALL_PVZ_".$profile_id;
         if($address!=self::DEF_COUNTRY && empty($items)
